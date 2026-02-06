@@ -23,5 +23,50 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+
+<button id="installBtn" hidden>Install app</button>
+<div id="installState" style="font-family: system-ui; font-size: 14px;"></div>
+
+<script>
+  let deferredPrompt = null;
+  const btn = document.getElementById('installBtn');
+  const state = document.getElementById('installState');
+
+  function setState(msg) { state.textContent = msg; }
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    // If you call preventDefault(), Chrome will not show its mini-infobar.
+    // Keep or remove this depending on whether you want to control timing.
+    e.preventDefault();
+
+    deferredPrompt = e;
+    btn.hidden = false;
+    setState('Install is available (beforeinstallprompt fired).');
+  });
+
+  btn.addEventListener('click', async () => {
+    if (!deferredPrompt) return;
+
+    deferredPrompt.prompt(); // must be in a user gesture
+    const choice = await deferredPrompt.userChoice;
+    setState(`User choice: ${choice.outcome}`);
+    deferredPrompt = null;
+    btn.hidden = true;
+  });
+
+  window.addEventListener('appinstalled', () => {
+    setState('App installed.');
+  });
+
+  // Optional: quick sanity check that a SW controls the page
+  window.addEventListener('load', () => {
+    setState(navigator.serviceWorker?.controller
+      ? 'Service worker controlling page.'
+      : 'No SW controller yet (refresh once after first load).');
+  });
+</script>
+
+
+
   </body>
 </html>
