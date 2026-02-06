@@ -1,0 +1,474 @@
+═══════════════════════════════════════════════════════════════════
+1) QA CHECKLIST
+   TU Dortmund Sociology B.A. Degree Planner PWA
+   Version: 1.0.0-rc1
+═══════════════════════════════════════════════════════════════════
+
+A. FUNCTIONAL ACCEPTANCE — PROGRESS SCREEN
+──────────────────────────────────────────
+
+A1. Module checklist renders all 22 modules across four sections:
+    - Compulsory (M1.1, M1.2, M2, M3, M4, M6, M7, M8, M10.1, M10.2a, M10.2b, M12)
+    - Elective Tracks (M5A, M5B, M9A, M9B)
+    - Mobility (M11)
+    - Komplementfach & Extras (KF1–KF4, SF)
+
+A2. Ticking a module:
+    [ ] Adds its CP to the progress bar total
+    [ ] Visually strikes through the module name
+    [ ] Changes the module card background to green-tinted
+    [ ] Persists after page reload (localStorage)
+
+A3. Progress bar:
+    [ ] Shows "X of 180 CP"
+    [ ] Percentage updates in real time
+    [ ] Bar width animates smoothly
+
+A4. Track selection:
+    [ ] Track A dropdown shows: Lifespan & Biography, Work/Org/Tech, Environment & Innovation
+    [ ] Track B dropdown shows: Social Inequalities, Health & Well-being, Knowledge & Education
+    [ ] Selection persists after page reload
+
+A5. Export:
+    [ ] Clicking "Export Progress" downloads a .json file
+    [ ] File contains completed, plan, trackA, trackB, lang keys
+    [ ] Filename includes date
+
+A6. Import:
+    [ ] Clicking "Import Progress" opens file picker
+    [ ] Selecting a valid export .json restores all state
+    [ ] Invalid JSON does not crash the app
+
+A7. Reset:
+    [ ] Clicking "Reset All" shows a confirmation prompt
+    [ ] Confirming clears all completed modules, plan, and tracks
+    [ ] Cancelling does nothing
+
+B. FUNCTIONAL ACCEPTANCE — PLAN SCREEN
+──────────────────────────────────────
+
+B1. Layout:
+    [ ] Six semester slots rendered (1–6)
+    [ ] Semester 5 labeled as "Mobility Semester"
+    [ ] Unplaced modules section shows all 22 modules initially
+
+B2. Drag and drop:
+    [ ] Dragging a module from unplaced → semester slot places it
+    [ ] Dragging a module between semester slots moves it
+    [ ] Dropping highlights the target slot (green background)
+    [ ] Removing via × button returns module to unplaced
+
+B3. Auto-fill:
+    [ ] "Auto-fill recommended" places every module into its recSem
+    [ ] After auto-fill, unplaced section is empty
+
+B4. Rule engine — errors detected:
+    [ ] M6 placed in Sem 1 while M2 is in Sem 1 → error (M2 must be earlier)
+    [ ] M6 placed without M2 placed at all → error
+    [ ] M6 placed without M4 placed at all → error
+    [ ] M7 placed without M2 in an earlier semester → error
+    [ ] M9A placed without M5A placed at all → error
+    [ ] M12 placed in Sem 2 (insufficient prior CP) → error
+    [ ] Auto-filled plan produces zero errors
+
+B5. Rule engine — warnings detected:
+    [ ] M5A placed before M3 → recommendation warning
+    [ ] Not all 180 CP placed → "X CP not yet placed" warning
+
+B6. Validation display:
+    [ ] Errors shown in red box with "✕ Rule Violations (N)"
+    [ ] Warnings shown in yellow box with "⚠ Warnings (N)"
+    [ ] Clean plan shows "✓ No issues detected" green box
+    [ ] Each error cites its source_ref
+
+C. FUNCTIONAL ACCEPTANCE — ASK SCREEN
+─────────────────────────────────────
+
+C1. Decision tree navigation:
+    [ ] Root shows 9 category buttons
+    [ ] Clicking a category navigates deeper
+    [ ] "← Back" returns to previous question
+    [ ] "Start over" returns to root
+
+C2. Answer cards:
+    [ ] Answer text renders with bold contact names
+    [ ] Contact box shows the responsible office
+    [ ] "More information →" links to correct TU Dortmund URL
+    [ ] All 9 root categories eventually reach an answer
+
+C3. All paths tested:
+    [ ] recognition → recog_domestic: Examination Board link
+    [ ] recognition → recog_abroad: Examination Board + Intl Officer
+    [ ] recognition → recog_other: Examination Board
+    [ ] mobility → mob_plan: International Student Advisor
+    [ ] mobility → mob_la: Internationalisation Officer
+    [ ] mobility → mob_erasmus: Erasmus Coordinator
+    [ ] mobility → mob_exception: Study Coordinator → Exam Board
+    [ ] exams → exam_reg: Study Coordinator
+    [ ] exams → exam_fail: Examination Board
+    [ ] exams → exam_dispute: Examiner → Examination Board
+    [ ] exams → exam_illness: Examination Board
+    [ ] complementary: Study Coordinator / respective dept
+    [ ] stud_fund: Central Advisory
+    [ ] general: Study Coordinator
+    [ ] mentoring: Mentoring Coordination
+    [ ] ai_use: Department guidelines
+    [ ] complaints: Complaint Management
+
+D. ACCESSIBILITY
+────────────────
+
+D1. Keyboard navigation:
+    [ ] All tabs reachable via Tab key
+    [ ] All checkboxes toggleable via Space
+    [ ] All buttons activatable via Enter
+    [ ] Plan screen: modules removable via × button (keyboard focus)
+    [ ] Ask screen: all option buttons focusable and activatable
+
+D2. Screen reader:
+    [ ] Tabs use role="tablist" and role="tab" with aria-selected
+    [ ] Remove buttons have aria-label="Remove M*"
+    [ ] Language toggle has aria-label
+
+D3. Visual:
+    [ ] Contrast ratio: green (#006747) on white > 4.5:1 (WCAG AA)
+    [ ] Error red (#C62828) on light pink > 4.5:1
+    [ ] Text size ≥ 12px throughout
+
+E. OFFLINE BEHAVIOR / PWA
+──────────────────────────
+
+E1. Local storage:
+    [ ] All state persists in localStorage under key "tu_soz_planner_v1"
+    [ ] Disabling network after first load: app still renders
+    [ ] Offline banner appears when navigator.onLine = false
+    [ ] Banner disappears when connection resumes
+
+E2. Data integrity:
+    [ ] Clearing localStorage → app initializes with defaults (no crash)
+    [ ] Corrupted localStorage value → app initializes with defaults
+
+F. IMPORT / EXPORT ROUND-TRIP
+─────────────────────────────
+
+F1. Round-trip test:
+    [ ] Complete 5 modules, set trackA, place 3 modules in plan
+    [ ] Export → close tab → open new tab → import file
+    [ ] All 5 modules still checked
+    [ ] trackA matches
+    [ ] Plan placements match
+
+F2. Cross-language round-trip:
+    [ ] Export in EN, switch to DE, import → data restored, lang restored
+
+G. "NOT OFFICIAL" NOTICE & SOURCE LINKS
+────────────────────────────────────────
+
+G1. Disclaimer visibility:
+    [ ] Yellow warning bar visible immediately below header on all screens
+    [ ] Contains "NOT an official TU Dortmund application" text
+    [ ] Link to official documents is clickable and opens correct URL
+
+G2. Source links in Ask screen:
+    [ ] Every answer card links to an official TU Dortmund URL
+    [ ] All URLs resolve (no 404) — test each of the 17 answer endpoints
+
+
+═══════════════════════════════════════════════════════════════════
+2) 10-MINUTE ACCEPTANCE CHECKLIST (Human walkthrough)
+═══════════════════════════════════════════════════════════════════
+
+Materials needed: A modern browser (Chrome/Firefox/Safari).
+Time budget: ~10 minutes.
+
+Step 1 — First Load (1 min)
+   □ Open the app in your browser
+   □ Verify the green header shows "Sociology B.A. Planner"
+   □ Verify the yellow disclaimer banner is visible
+   □ Click the official documents link → confirm it opens TU Dortmund
+   □ Click "DE" toggle → confirm UI switches to German
+   □ Click "EN" toggle → confirm UI switches back to English
+
+Step 2 — Progress Screen (2 min)
+   □ You are on the "Progress" tab. Progress bar reads "0 of 180 CP"
+   □ Check M1.1 → bar updates to "8 of 180 CP" (4%)
+   □ Check M1.2 → bar updates to "16 of 180 CP" (9%)
+   □ Select Track A: "Work, Organization & Technology"
+   □ Select Track B: "Health & Well-being"
+   □ Check M5A and M5B → verify CP updates correctly
+   □ Uncheck M1.1 → verify it returns to unchecked state, CP decreases
+
+Step 3 — Export & Import (2 min)
+   □ With M1.2, M5A, M5B checked and tracks selected:
+   □ Click "Export Progress" → a .json file downloads
+   □ Click "Reset All" → confirm the prompt → verify everything clears
+   □ Click "Import Progress" → select the exported file
+   □ Verify M1.2, M5A, M5B are re-checked and tracks restored
+
+Step 4 — Plan Screen (2 min)
+   □ Switch to the "Plan" tab
+   □ Click "Auto-fill recommended" → all 22 modules appear in slots
+   □ Verify Semester 5 shows M11 (30 CP)
+   □ Verify green "✓ No issues detected" message appears
+   □ Drag M6 from Semester 3 to Semester 1
+   □ Verify a red error appears (M2 must be completed before M6)
+   □ Drag M6 back to Semester 3 → error clears
+   □ Remove M12 from Semester 6 (click ×) → verify it moves to unplaced
+
+Step 5 — Ask Screen (2 min)
+   □ Switch to the "Ask" tab
+   □ See 9 category buttons
+   □ Click "Semester Abroad / Mobility" → see 4 sub-options
+   □ Click "Learning Agreement" → see answer with contact + link
+   □ Click the link → verify it opens the Erasmus page
+   □ Click "← Back" → return to mobility sub-options
+   □ Click "Start over" → return to root 9 categories
+   □ Click "Credit Recognition" → "Courses from abroad"
+   □ Verify answer mentions Examination Board + Intl Officer
+
+Step 6 — Offline + Persistence (1 min)
+   □ Reload the page → verify Progress, Plan, Ask state persists
+   □ Enable airplane mode (or DevTools → offline)
+   □ Reload → app still renders (may show offline banner)
+   □ Disable airplane mode → offline banner disappears
+
+RESULT: □ PASS / □ FAIL
+Tester: ____________  Date: ____________
+
+
+═══════════════════════════════════════════════════════════════════
+3) MAINTENANCE NOTES
+═══════════════════════════════════════════════════════════════════
+
+A. HOW TO UPDATE THE DEGREE MODEL WHEN TU DORTMUND UPDATES DOCUMENTS
+─────────────────────────────────────────────────────────────────────
+
+1. Download the latest versions of:
+   - Studienverlaufsplan (study plan PDF)
+   - Modulhandbuch (module handbook PDF)
+   - Prüfungsordnung (examination regulations)
+
+2. In the JSX file, locate the `MODULES` array (~line 80).
+
+3. For each module, check and update:
+   - `cp` — credit points (can change in PO amendments)
+   - `recSem` — recommended semester (check study plan image)
+   - `prereqs` — admission requirements (check §7 "Teilnahmevoraussetzungen"
+     in each module's handbook entry)
+   - `name_en` / `name_de` — official names
+
+4. If a new module is added:
+   - Add a new object to MODULES with all required fields
+   - Assign a unique `id` matching the module code
+   - Set `type` to one of: compulsory, elective_A, elective_B, mobility,
+     komplementfach, fundamentale
+   - Add `prereqs` array with typed prerequisite objects
+
+5. If a module is removed:
+   - Remove the object from MODULES
+   - Search for any references to that module's id in prereqs of other modules
+
+6. If track fields change:
+   - Update TRACK_A_FIELDS and TRACK_B_FIELDS arrays
+   - Update the `fields` entries in both language objects
+
+7. Update the SOURCES URLs if page paths change.
+
+8. Bump the version in the CARRYOVER PACK.
+
+B. HOW TO ADD NEW INTENTS TO ASK ROUTING WITHOUT CODE DUPLICATION
+──────────────────────────────────────────────────────────────────
+
+The Ask screen uses a declarative decision tree (ASK_TREE object).
+No code changes are needed — only data changes.
+
+To add a new routing path:
+
+1. Add a new entry to ASK_TREE with a unique key, e.g. "new_topic":
+   ```
+   new_topic: {
+     answer_en: "Your answer text with **bold contacts**.",
+     answer_de: "German version.",
+     contact_en: "Contact Name",
+     contact_de: "Kontaktname",
+     url: SOURCES.someUrl,
+   }
+   ```
+
+2. If you need an intermediate question, use the question format:
+   ```
+   new_category: {
+     question_en: "What about X?",
+     question_de: "Was zu X?",
+     options: [
+       { label_en: "Sub-option A", label_de: "Unteroption A", next: "new_topic" },
+       ...
+     ],
+   }
+   ```
+
+3. Add the new category to the root node's options array if it should
+   appear on the first screen.
+
+4. Add the corresponding label to both language objects in STRINGS
+   if referenced by id in the UI.
+
+Pattern: Every node is either a question (has `options`) or an answer
+(has `answer_en`). The tree is traversed by path, with back-tracking.
+No code logic is duplicated.
+
+C. HOW TO HANDLE DISCREPANCIES (POLICY AND UI SURFACING)
+─────────────────────────────────────────────────────────
+
+When official documents disagree with the app's model:
+
+1. ALWAYS DEFER TO THE OFFICIAL SOURCE. The app's disclaimer states it
+   is unofficial. Never suppress official information.
+
+2. If a student reports a mismatch:
+   a. Verify against the latest Modulhandbuch and Prüfungsordnung
+   b. Update the MODULES array or ASK_TREE
+   c. Add a timestamped comment in the code: // Updated YYYY-MM-DD per MHB v.X
+
+3. For edge cases the Prüfungsausschuss can override:
+   - The app's rule engine uses "needs confirmation" warnings (the
+     `recommended` prereq type) for soft constraints
+   - Hard constraints use the `completed` or `enrolled_or_completed` type
+   - When in doubt, make it a warning rather than an error
+
+4. Surfacing discrepancies to users:
+   - Each rule violation shows its source_ref (e.g., "MHB §M6 Teilnahmevoraussetzungen")
+   - The disclaimer bar links to official documents
+   - Every Ask answer links to the official TU Dortmund page
+
+5. Version tracking:
+   - Record which version of MHB and PO the current model is based on
+     in the CARRYOVER PACK
+   - Check for updates at the start of each semester (Oct/Apr)
+
+
+═══════════════════════════════════════════════════════════════════
+4) SOURCE MAP TABLE
+═══════════════════════════════════════════════════════════════════
+
+| Rule / Constraint | Module(s) | Source Document | Section / Label | URL |
+|---|---|---|---|---|
+| M6 requires M2 completed | M6 | Modulhandbuch (MHB) 14.06.2023 | §M6, Teilnahmevoraussetzungen: "Erfolgreicher Abschluss von Modul 2" | [MHB PDF](https://sowi.tu-dortmund.de/storages/sowi/r/Dokumente/Bachelor_Soziologie/MHB_BA_Soziologie_06_2023.pdf) |
+| M6 requires M4 enrolled or completed | M6 | Modulhandbuch | §M6, Teilnahmevoraussetzungen: "Einschreibung in oder Abschluss von Modul 4" | [MHB PDF](https://sowi.tu-dortmund.de/storages/sowi/r/Dokumente/Bachelor_Soziologie/MHB_BA_Soziologie_06_2023.pdf) |
+| M7 requires M2 completed | M7 | Modulhandbuch | §M7, Teilnahmevoraussetzungen | [MHB PDF](https://sowi.tu-dortmund.de/storages/sowi/r/Dokumente/Bachelor_Soziologie/MHB_BA_Soziologie_06_2023.pdf) |
+| M5 recommends M3 completed | M5A, M5B | Modulhandbuch | §M5.1–5.6, Teilnahmevoraussetzungen: "empfohlen wird der erfolgreiche Abschluss von Modul 3" | [MHB PDF](https://sowi.tu-dortmund.de/storages/sowi/r/Dokumente/Bachelor_Soziologie/MHB_BA_Soziologie_06_2023.pdf) |
+| M9A must match M5A track field | M9A | Modulhandbuch | §M9, "Beide Vertiefungsseminare aus dem Feld Grundlagen A" | [MHB PDF](https://sowi.tu-dortmund.de/storages/sowi/r/Dokumente/Bachelor_Soziologie/MHB_BA_Soziologie_06_2023.pdf) |
+| M9B must match M5B track field | M9B | Modulhandbuch | §M9, "Beide Vertiefungsseminare aus dem Feld Grundlagen B" | [MHB PDF](https://sowi.tu-dortmund.de/storages/sowi/r/Dokumente/Bachelor_Soziologie/MHB_BA_Soziologie_06_2023.pdf) |
+| M9 requires M5 enrolled or completed | M9A, M9B | Modulhandbuch | §M9, Teilnahmevoraussetzungen | [MHB PDF](https://sowi.tu-dortmund.de/storages/sowi/r/Dokumente/Bachelor_Soziologie/MHB_BA_Soziologie_06_2023.pdf) |
+| M12 requires 120 ECTS completed | M12 | Modulhandbuch | §M12: "Erwerb von 120 ECTS-Punkten (in Form von abgeschlossenen Modulen)" | [MHB PDF](https://sowi.tu-dortmund.de/storages/sowi/r/Dokumente/Bachelor_Soziologie/MHB_BA_Soziologie_06_2023.pdf) |
+| Total 180 CP across 6 semesters | All | Studienverlaufsplan Feb 2024 | Study plan overview image | [SVP PDF](https://sowi.tu-dortmund.de/storages/sowi/r/Dokumente/Bachelor_Soziologie/Studienverlaufsplan_BA_Soziologie_detailliert.pdf) |
+| M11 = 30 CP mobility in Semester 5 | M11 | Studienverlaufsplan | Sem 5 column: "Mobility 30 CP Auslandssemester" | [SVP PDF](https://sowi.tu-dortmund.de/storages/sowi/r/Dokumente/Bachelor_Soziologie/Studienverlaufsplan_BA_Soziologie_detailliert.pdf) |
+| Komplementfach = 4×5 CP in Sem 1–4, 6 | KF1–KF4 | Studienverlaufsplan | Columns for Sem 1–4, 6: "Komplementfach 5 CP" | [SVP PDF](https://sowi.tu-dortmund.de/storages/sowi/r/Dokumente/Bachelor_Soziologie/Studienverlaufsplan_BA_Soziologie_detailliert.pdf) |
+| Studium Fundamentale = 3 CP, Semester 3 | SF | Studienverlaufsplan | Sem 3: "Studium Fundamentale 3 CP" | [SVP PDF](https://sowi.tu-dortmund.de/storages/sowi/r/Dokumente/Bachelor_Soziologie/Studienverlaufsplan_BA_Soziologie_detailliert.pdf) |
+| M10.1 = 2 CP, Semester 2 | M10.1 | Studienverlaufsplan | Sem 2: "Berufsfelder für Soziolog*innen 2 CP" | [SVP PDF](https://sowi.tu-dortmund.de/storages/sowi/r/Dokumente/Bachelor_Soziologie/Studienverlaufsplan_BA_Soziologie_detailliert.pdf) |
+| M10.2 = 2×4 CP, Semesters 3 and 5 | M10.2a, M10.2b | Studienverlaufsplan | Sem 3 & 5: "Praxismodul 4 CP" | [SVP PDF](https://sowi.tu-dortmund.de/storages/sowi/r/Dokumente/Bachelor_Soziologie/Studienverlaufsplan_BA_Soziologie_detailliert.pdf) |
+| Track A fields: Lifespan, Work, Environment | M5A, M9A | Studienverlaufsplan | "Grundlagen A: Lebenslauf-und Biografie ODER Arbeit, Organisation und Technik ODER Umwelt und Innovation" | [SVP PDF](https://sowi.tu-dortmund.de/storages/sowi/r/Dokumente/Bachelor_Soziologie/Studienverlaufsplan_BA_Soziologie_detailliert.pdf) |
+| Track B fields: Inequality, Health, Knowledge | M5B, M9B | Studienverlaufsplan | "Grundlagen B: Soz. Ungleichheiten und kult. Unterschiede ODER Gesundheit und Wohlbefinden ODER Wissen und Bildung" | [SVP PDF](https://sowi.tu-dortmund.de/storages/sowi/r/Dokumente/Bachelor_Soziologie/Studienverlaufsplan_BA_Soziologie_detailliert.pdf) |
+| Mobility exception → research internship | M11 | Program page (Semester abroad) | Exception cases requiring Prüfungsausschuss approval | [Semester abroad](https://sowi.tu-dortmund.de/en/study-programs/overview-of-the-study-programs/sociology-1/semester-abroad/) |
+| Ask routing: Recognition → Examination Board | — | Program page (Recognition) | "Recognition of examination results / Examination board" | [Recognition](https://sowi.tu-dortmund.de/en/study-programs/overview-of-the-study-programs/sociology-1/recognition-of-examination-results-/-examination-board/) |
+| Ask routing: Erasmus contacts | — | International Affairs pages | Erasmus Departmental Coordinator / International Student Advisor | [Erasmus](https://sowi.tu-dortmund.de/en/international-affairs/outgoings/erasmus/) |
+| Ask routing: AI guidelines | — | Program page (ChatGPT/AI) | Department AI usage policy | [AI page](https://sowi.tu-dortmund.de/en/study-programs/overview-of-the-study-programs/sociology-1/dealing-with-chatgpt-/-ai/) |
+
+
+═══════════════════════════════════════════════════════════════════
+5) CARRYOVER PACK (YAML)
+═══════════════════════════════════════════════════════════════════
+
+---
+release_tag_suggestion: "v1.0.0-rc1"
+
+source_documents_basis:
+  modulhandbuch: "MHB_BA_Soziologie_06_2023.pdf (Stand 14.06.2023)"
+  studienverlaufsplan: "Studienverlaufsplan_BA_Soziologie_detailliert.pdf (Stand Februar 2024)"
+  program_pages: "sowi.tu-dortmund.de BA Sociology pages (accessed 2025-02)"
+
+known_risks:
+  - id: R1
+    severity: medium
+    description: >
+      The Prüfungsordnung PDF was not directly parsed — prerequisite rules
+      for M6, M7, M9, and M12 are derived from the Modulhandbuch. If the PO
+      differs (e.g., via amendment), the rule engine may be stale.
+    mitigation: >
+      Cross-check against the latest PO at the start of each semester.
+      Add a version_checked_date field to the model.
+
+  - id: R2
+    severity: low
+    description: >
+      The app uses HTML5 drag-and-drop, which has limited mobile support.
+      Touch-based dragging may not work on all mobile browsers.
+    mitigation: >
+      Add touch event handlers (onTouchStart/Move/End) or integrate a
+      library like @dnd-kit/core for cross-platform drag support.
+
+  - id: R3
+    severity: low
+    description: >
+      The uploaded zip file was not recoverable in this session, so the
+      app was rebuilt from specification and official sources. The original
+      codebase's test suite, service worker, and build configuration are
+      not carried over.
+    mitigation: >
+      Compare this output with the original repo. Port the service worker
+      (sw.js), Vite/esbuild config, and test files. The degree model and
+      rule engine in this version are authoritative.
+
+  - id: R4
+    severity: medium
+    description: >
+      Ask router contact details (names, emails) are not included — only
+      role titles and URLs. If the department reorganizes roles, URL
+      paths may break.
+    mitigation: >
+      Check all SOURCES URLs monthly. Add a simple link-checker script
+      to CI (curl --head each URL, fail on 404).
+
+  - id: R5
+    severity: low
+    description: >
+      M12 min_cp check counts only modules placed in earlier semesters
+      in the Plan screen, not the Progress screen completions. The two
+      screens do not yet cross-reference.
+    mitigation: >
+      Wire completed modules from Progress into the Plan validation.
+      Low urgency since Plan screen is a planning tool, not a hard gate.
+
+update_procedure_steps:
+  - step: 1
+    action: "Download latest MHB and Studienverlaufsplan PDFs from program page"
+    url: "https://sowi.tu-dortmund.de/en/study-programs/overview-of-the-study-programs/sociology-1/module-handbook-examination-regulations-study-plan/"
+
+  - step: 2
+    action: "Compare each module's CP, recSem, and Teilnahmevoraussetzungen against MODULES array"
+
+  - step: 3
+    action: "Update changed values in the MODULES array. Add timestamped comments."
+
+  - step: 4
+    action: "Verify all SOURCES URLs resolve (no 404). Update paths if TU Dortmund restructured."
+
+  - step: 5
+    action: "Run the QA checklist (Section 1 above), especially B4 (rule engine errors)"
+
+  - step: 6
+    action: "Run the 10-minute acceptance checklist (Section 2 above)"
+
+  - step: 7
+    action: "Update source_documents_basis in this CARRYOVER PACK with new document dates"
+
+  - step: 8
+    action: "Tag the release: git tag -a vX.Y.Z -m 'Updated to MHB YYYY-MM-DD'"
+
+  - step: 9
+    action: "Deploy and verify disclaimer link still points to current documents"
+
+semester_check_schedule:
+  winter_semester: "Check in first week of October"
+  summer_semester: "Check in first week of April"
+...
